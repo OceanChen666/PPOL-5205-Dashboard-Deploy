@@ -16,7 +16,7 @@ app.layout = html.Div([
     html.Header("Offshore Platform Dash App", style={"fontSize": 40,
                                                "textAlign": "center"}),
     dcc.Dropdown(id="mydropdown",
-                 options=df["OPERNAME"].unique(),
+                 options=['kmeans_label','ahc_label','dbscan_label'],
                  value="",
                  style={"width": "50%", "margin-left": "130px", "margin-top": "60px"}),
     dcc.Graph(id="my_scatter_geo")
@@ -25,11 +25,11 @@ app.layout = html.Div([
 
 @app.callback(Output("my_scatter_geo", "figure"),
               Input("mydropdown", "value"))
-def sync_input(volcano_selection):
-    
+def sync_input(cluster_selection):
     fig = px.scatter_geo(df, 
                      lat='LATITUDE', 
                      lon='LONGITUDE',  
+                     color=cluster_selection,
                         #    color="peak_hour", size="car_hours",
                   hover_name="OPERNAME")
     # Set Size of Dots
@@ -42,7 +42,7 @@ def sync_input(volcano_selection):
         lataxis_range=[26, 30],    # latitude range
     )
     fig.update_layout(
-        title = f'Aged US offshore platform{volcano_selection}',
+        title = f'Aged US offshore platform{cluster_selection}',
         geo=dict(
         scope='north america',
         showland=True,
